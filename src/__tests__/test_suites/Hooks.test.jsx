@@ -19,25 +19,23 @@ describe("Task Manager App", () => {
   });
 
   test("adds a new task when the form is submitted", async () => {
-    global.setFetchResponse(global.baseTasks)
-    let { getByText,getByPlaceholderText } = render(
-      <TaskProvider>
-        <App />
-      </TaskProvider>
-    );
+  global.setFetchResponse(global.baseTasks)
+  render(
+    <TaskProvider>
+      <App />
+    </TaskProvider>
+  );
 
-    const input = getByPlaceholderText("Add a new task...");
-    const button = getByText("Add Task");
+  const input = await screen.findByPlaceholderText("Add a new task...");
+  const button = await screen.findByText("Add Task");
 
-    fireEvent.change(input, { target: { value: "Walk the dog" } });
-    
-    global.setFetchResponse({ id: 3, title: "Walk the dog", completed: false })
+  fireEvent.change(input, { target: { value: "Walk the dog" } });
+  
+  global.setFetchResponse({ id: 3, title: "Walk the dog", completed: false })
+  fireEvent.click(button);
 
-    await waitFor(() => {
-      fireEvent.click(button);
-      expect(screen.getByText("Walk the dog")).toBeInTheDocument();
-    });
-  });
+  expect(await screen.findByText("Walk the dog")).toBeInTheDocument();
+});
 
   test("filters tasks based on search input", async () => {
     global.setFetchResponse(global.baseTasks)
